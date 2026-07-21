@@ -1,0 +1,10 @@
+src/
+tests/
+.github/
+.git/
+*.log
+*.tmp
+.DS_Store
+node_modules/
+coverage/
+.nyc_output/

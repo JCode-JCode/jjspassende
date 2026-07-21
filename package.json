@@ -1,0 +1,33 @@
+{
+  "name": "jjspassende",
+  "version": "1.0.0",
+  "description": "JavaScript port of jpassende – a cryptographic library with multiple encryption modes",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node tests/1test.js",
+    "prepublishOnly": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JCode-JCode/jjspassende.git"
+  },
+  "keywords": [
+    "cryptography",
+    "encryption",
+    "aead",
+    "jpassende",
+    "nodejs"
+  ],
+  "author": "J Code",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/JCode-JCode/jjspassende/issues"
+  },
+  "homepage": "https://github.com/JCode-JCode/jjspassende#readme",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "blakejs": "^1.2.1"
+  }
+}

@@ -1,8 +1,11 @@
+# jjspassende
+
 [![Node.js Version](https://img.shields.io/badge/node-16%2B-green)](https://nodejs.org/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![npm version](https://img.shields.io/npm/v/jjspassende)](https://www.npmjs.com/package/jjspassende)
 [![npm project](https://img.shields.io/badge/npm-jjspassende-blue)](https://www.npmjs.com/package/jjspassende)
+[![Developer](https://img.shields.io/badge/developer-J%20Code-blueviolet)](#)
 
 <br>
 
@@ -169,6 +172,20 @@ try {
 
 ---
 
+## Python Port
+
+jjspassende also has an official Python port called **jpassende**, offering the same patterns and API design, and it's what jjspassende itself was ported from.
+
+· **GitHub repository:**
+https://github.com/JCode-JCode/jpassende
+
+· **PyPI page:**
+jpassende is also available via PyPI.
+
+For full usage details, installation instructions, and examples, check out the jpassende README in its own repository.
+
+---
+
 ## Issues and Contributions
 
 Bug reports and feature requests are welcome via GitHub Issues. Pull requests should maintain the existing code style and include tests where appropriate.
@@ -191,4 +208,4 @@ This project is licensed under the Apache License 2.0 – see the LICENSE file f
 
 ---
 
-Designed and built with love by **J Code**
+Designed and built with love by **J Code❤️**

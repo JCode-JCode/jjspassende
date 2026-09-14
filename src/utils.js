@@ -54,29 +54,19 @@ const MAGIC = Buffer.from('jpas', 'utf8');
 const VERSION = 1;
 
 function pack(patternId, flags, salt, nonce, ciphertext, aad = null, macKey = null) {
-  const header = Buffer.alloc(7);
-  MAGIC.copy(header, 0);
-  header.writeUInt8(VERSION, 4);
-  header.writeUInt8(patternId, 5);
-  header.writeUInt8(flags, 6);
-
-  const parts = [header];
+  let pkg = Buffer.concat([MAGIC, Buffer.from([VERSION, patternId, flags])]);
   if (aad && aad.length > 0) {
     const aadLen = Buffer.alloc(4);
     aadLen.writeUInt32BE(aad.length, 0);
-    parts.push(aadLen);
-    parts.push(Buffer.isBuffer(aad) ? aad : Buffer.from(aad));
+    pkg = Buffer.concat([pkg, aadLen, Buffer.isBuffer(aad) ? aad : Buffer.from(aad)]);
   }
-  parts.push(Buffer.isBuffer(salt) ? salt : Buffer.from(salt));
+  pkg = Buffer.concat([pkg, Buffer.isBuffer(salt) ? salt : Buffer.from(salt)]);
   if (nonce && nonce.length > 0) {
-    parts.push(Buffer.isBuffer(nonce) ? nonce : Buffer.from(nonce));
+    pkg = Buffer.concat([pkg, Buffer.isBuffer(nonce) ? nonce : Buffer.from(nonce)]);
   }
-  parts.push(Buffer.isBuffer(ciphertext) ? ciphertext : Buffer.from(ciphertext));
-
-  let pkg = Buffer.concat(parts);
+  pkg = Buffer.concat([pkg, Buffer.isBuffer(ciphertext) ? ciphertext : Buffer.from(ciphertext)]);
   if (macKey) {
-    const tag = mac(macKey, pkg);
-    pkg = Buffer.concat([pkg, tag]);
+    pkg = Buffer.concat([pkg, mac(macKey, pkg)]);
   }
   return pkg;
 }
@@ -132,23 +122,16 @@ function unpack(pkg, patternId, expectedNonceSize = 0, hasMac = true) {
 }
 
 function packDerivation(patternId, flags, salt, derivedData, verification, aad = null) {
-  const header = Buffer.alloc(7);
-  MAGIC.copy(header, 0);
-  header.writeUInt8(VERSION, 4);
-  header.writeUInt8(patternId, 5);
-  header.writeUInt8(flags, 6);
-
-  const parts = [header];
+  let pkg = Buffer.concat([MAGIC, Buffer.from([VERSION, patternId, flags])]);
   if (aad && aad.length > 0) {
     const aadLen = Buffer.alloc(4);
     aadLen.writeUInt32BE(aad.length, 0);
-    parts.push(aadLen);
-    parts.push(Buffer.isBuffer(aad) ? aad : Buffer.from(aad));
+    pkg = Buffer.concat([pkg, aadLen, Buffer.isBuffer(aad) ? aad : Buffer.from(aad)]);
   }
-  parts.push(Buffer.isBuffer(salt) ? salt : Buffer.from(salt));
-  parts.push(Buffer.isBuffer(derivedData) ? derivedData : Buffer.from(derivedData));
-  parts.push(Buffer.isBuffer(verification) ? verification : Buffer.from(verification));
-  return Buffer.concat(parts);
+  pkg = Buffer.concat([pkg, Buffer.isBuffer(salt) ? salt : Buffer.from(salt)]);
+  pkg = Buffer.concat([pkg, Buffer.isBuffer(derivedData) ? derivedData : Buffer.from(derivedData)]);
+  pkg = Buffer.concat([pkg, Buffer.isBuffer(verification) ? verification : Buffer.from(verification)]);
+  return pkg;
 }
 
 function unpackDerivation(pkg, patternId) {

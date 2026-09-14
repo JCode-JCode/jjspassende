@@ -136,13 +136,15 @@ const StreamMixin = {
         const nonce = secureBytes(16);
 
         let stateA = crypto.createHash('sha3-256').update(Buffer.concat([encKey, nonce])).digest();
-        let stateB = blake.blake2b(Buffer.concat([encKey, nonce]), null, 32);
+        let stateB = Buffer.from(blake.blake2b(Buffer.concat([encKey, nonce]), null, 32));
         const result = Buffer.alloc(dataBytes.length);
-        for (let i = 0; i < dataBytes.length; i++) {
-            const keyByte = stateA[0] ^ stateB[0];
-            result[i] = dataBytes[i] ^ keyByte;
+        for (let i = 0; i < dataBytes.length; i += 32) {
+            const chunk = dataBytes.subarray(i, Math.min(i + 32, dataBytes.length));
             stateA = crypto.createHash('sha3-256').update(stateA).digest();
-            stateB = blake.blake2b(stateB, null, 32);
+            stateB = Buffer.from(blake.blake2b(stateB, null, 32));
+            const keystream = xorBytes(stateA, stateB);
+            const xored = xorBytes(chunk, keystream.subarray(0, chunk.length));
+            xored.copy(result, i);
         }
 
         const pkg = pack(PATTERN_IDS.lfsr, aad ? 0x01 : 0x00, salt, nonce, result, aad, macKey);
@@ -169,13 +171,15 @@ const StreamMixin = {
         }
 
         let stateA = crypto.createHash('sha3-256').update(Buffer.concat([encKey, nonce])).digest();
-        let stateB = blake.blake2b(Buffer.concat([encKey, nonce]), null, 32);
+        let stateB = Buffer.from(blake.blake2b(Buffer.concat([encKey, nonce]), null, 32));
         const result = Buffer.alloc(ciphertext.length);
-        for (let i = 0; i < ciphertext.length; i++) {
-            const keyByte = stateA[0] ^ stateB[0];
-            result[i] = ciphertext[i] ^ keyByte;
+        for (let i = 0; i < ciphertext.length; i += 32) {
+            const chunk = ciphertext.subarray(i, Math.min(i + 32, ciphertext.length));
             stateA = crypto.createHash('sha3-256').update(stateA).digest();
-            stateB = blake.blake2b(stateB, null, 32);
+            stateB = Buffer.from(blake.blake2b(stateB, null, 32));
+            const keystream = xorBytes(stateA, stateB);
+            const xored = xorBytes(chunk, keystream.subarray(0, chunk.length));
+            xored.copy(result, i);
         }
         return outputRaw ? result : toStr(result);
     }
